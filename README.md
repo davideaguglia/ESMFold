@@ -1,3 +1,3 @@
-# GPU poor version of ESMFold through Hugging Face and Quanto
+# GPU poor ESMFold through Hugging Face and Quanto
 
 
