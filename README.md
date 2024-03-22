@@ -53,7 +53,7 @@ This procedure can optimize the model performance and the memory usage, but it i
 
 
 ## Quantization
-Quantization is a powerful tool when it come to achieving lower GPU memory requirements to run deep learning models. In particular, post training quantization (PTQ) aims at reducing the necessary resources for inference converting the wheights and the activations of the model to another type, e.g. `float8` or `int8`, while in principle preserving the model accuracy. To this end, it is possibile to use the python quantization toolkit `Quanto`([github](https://github.com/huggingface/quanto), which is integrated in the Hugging Face `transformers` library and it is straightforward to implement. 
+Quantization is a powerful tool when it come to achieving lower GPU memory requirements to run deep learning models. In particular, post training quantization (PTQ) aims at reducing the necessary resources for inference converting the wheights and the activations of the model to another type, e.g. `float8` or `int8`, while in principle preserving the model accuracy. To this end, it is possibile to use the python quantization toolkit `Quanto`([github](https://github.com/huggingface/quanto)), which is integrated in the Hugging Face `transformers` library and it is straightforward to implement. 
 
 ```python
 from transformers import AutoTokenizer, EsmForProteinFolding, QuantoConfig
