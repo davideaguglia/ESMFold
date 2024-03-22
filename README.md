@@ -22,7 +22,7 @@ model = model.cuda()
 Then given a `sequence` it is possible to create the model inputs through the `tokenizer`
 
 ```python
-sequence = "MTYKLILNGKTLKGETTTEAVDAATAEKVFKQYANDNGVDGEWTYDDATKTFTVTE"
+sequence="SHHWGYGKHNGPEHWHKDFPIAKGERQSPVDIDTHTAKYDPSLKPLSVSYDQATSLRILNNGHAFNVEFDDSQDKAVLKGGPLDGTYRLIQFHFHWGSLDGQGSEHTVDKKKYAAELHLVHWNTKYGDFGKAVQQPDGLAVLGIFLKVGSAKPGLQKVVDVLDSIKTKGKSADFTNFDPRGLLPESLDYWTYPGSLTTPPLLECVTWIVLKEPISVSSEQVLKFRKLNFNGEGEPEELMVDNWRPAQPLKNRQIKASFK"
 
 inputs = tokenizer([sequence], return_tensors="pt", add_special_tokens=False)['input_ids']
 ```
@@ -42,13 +42,31 @@ positions = outputs['positions'][-1, 0]
 
 
 ## Optimization
-The main problem with the above implementation is the GPU memory demand: loading the model through the Hugging Face `transformers` requires at least 15GB of GPU memory, which can grow as far as 24GB when considering longer and longer sequences. Hence, the first possibility to make the model lighter is to convert the model weights to `float16`, a sort of post-training quantization. This is done with a single line of code
+The main problem with the above implementation is the GPU memory demand: loading the model through the Hugging Face `transformers` requires at least 15GB of GPU memory, which can grow as far as 24GB when considering longer sequences. 
+For instance, for the previously considered protein, which is made of 256 residues ([pdb](https://www.rcsb.org/structure/1CA2)), `nvidia_smi` indicates that 16GB of memory where used for the inference.<br/>
+Hence, the first possibility to make the model lighter is to convert the model weights to `float16`, a sort of post-training quantization. This is done with a single line of code
 
 ```python
 model.esm = model.esm.half()
+```
+This procedure can optimize the model performance and the memory usage, but it is not risolutive, as the memory usage is only slightly decreased to 15.5GB.
+
+
+## Quantization
+Quantization is a powerful tool when it come to achieving lower GPU memory requirements to run deep learning models. In particular, post training quantization (PTQ) aims at reducing the necessary resources for inference converting the wheights and the activations of the model to another type, e.g. `float8` or `int8`, while in principle preserving the model accuracy. To this end, it is possibile to use the python quantization toolkit `Quanto`([github](https://github.com/huggingface/quanto), which is integrated in the Hugging Face `transformers` library and it is straightforward to implement. 
+
+```python
+from transformers import AutoTokenizer, EsmForProteinFolding, QuantoConfig
+
+tokenizer = AutoTokenizer.from_pretrained("facebook/esmfold_v1")
+quantization_config = QuantoConfig(weights="int8")
+model = EsmForProteinFolding.from_pretrained("facebook/esmfold_v1", device_map="cuda", quantization_config=quantization_config)
+
 ```
 
 
 
 
+
+6GB
 
