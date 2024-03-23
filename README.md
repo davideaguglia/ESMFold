@@ -49,7 +49,7 @@ Hence, the first possibility to make the model lighter is to convert the model w
 ```python
 model.esm = model.esm.half()
 ```
-This procedure can optimize the model performance and the memory usage, but it is not risolutive, as the memory usage is only slightly decreased to 15.5GB.
+With this optimization of the model performance and requirements the memory usage is significantily decreased to 10.2GB, with little or no variation in the inference accuracy.
 
 
 ## Quantization
@@ -66,7 +66,17 @@ model = EsmForProteinFolding.from_pretrained("facebook/esmfold_v1", device_map="
 
 
 
-
-
 6GB
 
+
+![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/acc.png)
+
+![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/memory.png)
+
+![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/time.png)
+
+![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/model_complete.png)
+
+![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/model_complete_16.png)
+
+![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/model_complete_8.png)
