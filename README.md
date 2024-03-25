@@ -80,3 +80,5 @@ model = EsmForProteinFolding.from_pretrained("facebook/esmfold_v1", device_map="
 ![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/model_complete_16.png)
 
 ![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/model_complete_8.png)
+
+![alt text](https://github.com/davideaguglia/ESMFold/blob/0f91aea9c07d44897b11eb094b268c319e0f2dde/plots/models.png)
