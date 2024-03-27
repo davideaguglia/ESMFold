@@ -9,7 +9,7 @@ In order to use the tranformer library you need to install `transformers` and `a
 ```
 pip install transformers accelerate
 ```
-Predicting the protein structure for a given sequence is then straightforward. First you need to instantiate the model, eventually transferring the model to GPU
+Predicting the protein structure for a given sequence is then straightforward. First you need to instantiate the model, eventually transferring it to GPU
 
 ```python
 from transformers import AutoTokenizer, EsmForProteinFolding
@@ -44,12 +44,12 @@ positions = outputs['positions'][-1, 0]
 ## Optimization
 The main problem with the above implementation is the GPU memory demand: loading the model through the Hugging Face `transformers` requires at least 15GB of GPU memory, which can grow as far as 24GB when considering longer sequences. 
 For instance, for the previously considered protein, which is made of 256 residues ([pdb](https://www.rcsb.org/structure/1CA2)), `nvidia_smi` indicates that 16GB of memory where used for the inference.<br/>
-Hence, the first possibility to make the model lighter is to convert the model weights to `float16`, a sort of post-training quantization. This is done with a single line of code
+Hence, the first possibility to make the model lighter is to convert the model weights to `float16`, a sort of simple post-training quantization scheme. This is done with a single line of code
 
 ```python
 model.esm = model.esm.half()
 ```
-With this optimization of the model performance and requirements the memory usage is significantily decreased to 10.2GB, with little or no variation in the inference accuracy.
+With this optimization of the model performance and requirements the memory usage is significantily decreased to 10.2GB, with little or no variation in the inference accuracy (more about this in the following).
 
 
 ## Quantization
