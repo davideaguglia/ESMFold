@@ -1,4 +1,4 @@
-# GPU poor ESMFold through Hugging Face and Quanto
+# ESMFold for GPU poor through Hugging Face and Quanto
 ESMFold is a protein language model based on the ESM-2 3B parameter architecture developed by the Meta Fundamental AI Research Protein Team (FAIR) ([paper](https://www.biorxiv.org/content/10.1101/2022.07.20.500902v2)).
 It is one of the best model available when it comes to predicting the structure of a protein from the amino acids sequence. However, the GPU resources that are necessary to run this model can be prohibitive, even for sequences of a few hundreds of residues. This article aim at finding some possible solutions to overcome this issue, mainly using quantization techniques.
 
@@ -80,9 +80,24 @@ In general, the models show the same correlation with the sequence length and th
 #### 2. Time
 The second analysis that can be carried out is about the inference time. In particular, it is not obvious if the quantized models will also decrease the inference time, as matrix multiplication with 32bit are optimized. 
 ![alt text](https://github.com/davideaguglia/ESMFold/blob/b40fff68bd9a7be50e8706619eda7fade258a46d/plots/time.png)
-From the graph it is clear how the inference time is approximately the same for the three models. However, for shorter sequences the int8 model appears to be the slowest one, probabily due to the lack of optimized kernels (as mentioned also in [github](https://github.com/huggingface/quanto)).
+From the graph it is clear how the inference time is approximately the same for the three models. However, for shorter sequences the int8 model appears to be the slowest one, probabily due to the lack of optimized kernels (as mentioned also [here](https://github.com/huggingface/quanto/blob/main/README.md)).
+
 #### 3. Accuracy
+Finally, one last important thing to consider is the models accuracy. We expect a loss in performance for the quantized models, but how much is this reduction?
+To carry out this analysis it is possible to consider two measures of the model accuracy. The first and simplest one is the average pLDDT, which is an internal per-residue estimate of the model confidence on a scale from 0 - 100 (where an higher pLDDT is better). These values can be obtained from the `output`
+```python
+plddt = output['plddt'][0, :, 1]
+
+```
+
+The second method to measure the accuracy is through the contact map prediction. Given the predicted three-dimensional protein structure, which is given by the `positions`, it is possible to determine this matrix, which is nothing but the distance between all possible residue pairs. Then, this map can be compared to the one obtained from the experimentally measured proteins that can be found in the PDB.
+
 ![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/acc.png)
 
-
+This graph demonstrates how the performance loss due to the quantization procedure is minimal for both the configurations. The 16bit model performs essentially as the full model, while the huge reduction in GPU memory of the int8 quantization determines a little more accuracy reduction.
+To conclude this analysis the following graphs display, for each model, the correlations between the plDDT the accuracy and the sequence length.
 ![alt text](https://github.com/davideaguglia/ESMFold/blob/0f91aea9c07d44897b11eb094b268c319e0f2dde/plots/models.png)
+
+
+## Conclusions
+This work demonstrates how it is possible to make use of available libraries, such as `transformers` and `quanto`, to easily implement quantization techniques to ESMFold. As a result of the analysis, this methods should be primarly intended for reducing the memory requirements necessary to run this model and not for increasing the inference time. It is remarkable that the benefits here outlined comes at little cost of performance, hence allowing for the use of this model for a precise protein structure prediction.
