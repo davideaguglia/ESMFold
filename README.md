@@ -1,5 +1,5 @@
 # GPU poor ESMFold through Hugging Face and Quanto
-ESMFold is a protein language model based on the ESM-2 3B parameter model developed by the Meta Fundamental AI Research Protein Team (FAIR) ([paper](https://www.biorxiv.org/content/10.1101/2022.07.20.500902v2)).
+ESMFold is a protein language model based on the ESM-2 3B parameter architecture developed by the Meta Fundamental AI Research Protein Team (FAIR) ([paper](https://www.biorxiv.org/content/10.1101/2022.07.20.500902v2)).
 It is one of the best model available when it comes to predicting the structure of a protein from the amino acids sequence. However, the GPU resources that are necessary to run this model can be prohibitive, even for sequences of a few hundreds of residues. This article aim at finding some possible solutions to overcome this issue, mainly using quantization techniques.
 
 ## Usage
