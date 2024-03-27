@@ -72,13 +72,15 @@ However these methods, although they seem promising, needs further analysis to b
 - How much accuracy loss the quantized models have?
 
 #### 1. Memory
+The following graph displays the GPU memory for the three different models considered, for an increasing sequence length.
 
-
-![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/memory.png)
+![alt text](https://github.com/davideaguglia/ESMFold/blob/4f4412abbbe17a382c7d382acea32f4956c6a9a9/plots/memory.png)
+In general, the models show the same correlation with the sequence length and the memory reduction between them is approximately constant: ~ 6 GB from the full model to the 16bit one and another ~ 4GB to the int8 model. 
 
 #### 2. Time
-![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/time.png)
-
+The second analysis that can be carried out is about the inference time. In particular, it is not obvious if the quantized models will also decrease the inference time, as matrix multiplication with 32bit are optimized. 
+![alt text](https://github.com/davideaguglia/ESMFold/blob/b40fff68bd9a7be50e8706619eda7fade258a46d/plots/time.png)
+From the graph it is clear how the inference time is approximately the same for the three models. However, for shorter sequences the int8 model appears to be the slowest one, probabily due to the lack of optimized kernels (as mentioned also in [github](https://github.com/huggingface/quanto)).
 #### 3. Accuracy
 ![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/acc.png)
 
