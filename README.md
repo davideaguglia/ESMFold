@@ -3,9 +3,9 @@ ESMFold is a protein language model based on the ESM-2 3B parameter architecture
 It is one of the best model available when it comes to predicting the structure of a protein from the amino acids sequence. However, the GPU resources that are necessary to run this model can be prohibitive, even for sequences of a few hundreds of residues. This article aim at finding some possible solutions to overcome this issue, mainly using quantization techniques.
 
 ## Usage
-To get started with this model you can either follow the instructions on the ESM GitHub page ([github](https://github.com/facebookresearch/esm?tab=readme-ov-file#esmfold)) or use the [Huggin Face Tranformer library](https://huggingface.co/docs/transformers/model_doc/esm), which provides an easy-to-use implementation and doesn't require the ESMFold dependencies. 
+To get started with this model you can either follow the instructions on the ESM GitHub page ([github](https://github.com/facebookresearch/esm?tab=readme-ov-file#esmfold)) or use the [Huggin Face Transformers library](https://huggingface.co/docs/transformers/model_doc/esm), which provides an easy-to-use implementation and doesn't require the ESMFold dependencies. 
 
-In order to use the tranformer library you need to install the `transformers` and `accelerate` libraries
+In order to use the tranformer library you need to install `transformers` and `accelerate` 
 ```
 pip install transformers accelerate
 ```
@@ -15,7 +15,7 @@ Predicting the protein structure for a given sequence is then straightforward. F
 from transformers import AutoTokenizer, EsmForProteinFolding
 
 tokenizer = AutoTokenizer.from_pretrained("facebook/esmfold_v1")
-model = EsmForProteinFolding.from_pretrained("facebook/esmfold_v1", low_cpu_mem_usage=True)
+model = EsmForProteinFolding.from_pretrained("facebook/esmfold_v1")
 
 model = model.cuda()
 ```
@@ -53,7 +53,7 @@ With this optimization of the model performance and requirements the memory usag
 
 
 ## Quantization
-Quantization is a powerful tool when it come to achieving lower GPU memory requirements to run deep learning models. In particular, post training quantization (PTQ) aims at reducing the necessary resources for inference converting the wheights and the activations of the model to another type, e.g. `float8` or `int8`, while in principle preserving the model accuracy. To this end, it is possibile to use the python quantization toolkit `Quanto`([github](https://github.com/huggingface/quanto)), which is integrated in the Hugging Face `transformers` library and it is straightforward to implement. 
+Quantization is a powerful tool when it comes to achieving lower GPU memory requirements to run deep learning models. In particular, post training quantization (PTQ) aims at reducing the necessary resources for inference converting the wheights and the activations of the model to another type, e.g. `float8` or `int8`, while in principle preserving the model accuracy. To this end, it is possibile to use the python quantization toolkit `Quanto`([github](https://github.com/huggingface/quanto)), which is integrated in the Hugging Face `transformers` library and it is straightforward to implement. 
 
 ```python
 from transformers import AutoTokenizer, EsmForProteinFolding, QuantoConfig
@@ -63,16 +63,24 @@ quantization_config = QuantoConfig(weights="int8")
 model = EsmForProteinFolding.from_pretrained("facebook/esmfold_v1", device_map="cuda", quantization_config=quantization_config)
 
 ```
+Comparing again the memory usage during the inference for the same protein results in only 6GB occupied!
 
+## Analysis
+However these methods, although they seem promising, needs further analysis to be efficiently implemented. In particular, what is still unclear is: 
+- How does the memory requirement change for increasing sequence length? 
+- How does the inference time correlates with the sequence length? Is there a speed up or a slow down for the quantized models? 
+- How much accuracy loss the quantized models have?
 
+#### 1. Memory
 
-6GB
-
-
-![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/acc.png)
 
 ![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/memory.png)
 
+#### 2. Time
 ![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/time.png)
+
+#### 3. Accuracy
+![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/acc.png)
+
 
 ![alt text](https://github.com/davideaguglia/ESMFold/blob/0f91aea9c07d44897b11eb094b268c319e0f2dde/plots/models.png)
