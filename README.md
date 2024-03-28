@@ -82,12 +82,12 @@ Although these methods seem promising, some further analysis is necessary to eva
 #### 1. Memory
 The following graph displays the GPU memory for the three different models considered, for an increasing sequence length.
 
-![alt text](https://github.com/davideaguglia/ESMFold/blob/4f4412abbbe17a382c7d382acea32f4956c6a9a9/plots/memory.png)
+![alt text](https://github.com/davideaguglia/ESMFold/blob/fb7372984e2a77a31036d6bc3d2d6357b20595e0/plots/memory.png)
 In general, the models show the same correlation with the sequence length and the memory reduction between them is approximately constant: ~ 6 GB from the full model to the `float16` one and another ~ 4GB to the `int8` model. 
 
 #### 2. Time
 The second analysis that can be carried out is about the inference time. In particular, it is not obvious if the quantized models will also be faster, as matrix multiplication with `float32` are optimized. 
-![alt text](https://github.com/davideaguglia/ESMFold/blob/b40fff68bd9a7be50e8706619eda7fade258a46d/plots/time.png)
+![alt text](https://github.com/davideaguglia/ESMFold/blob/fb7372984e2a77a31036d6bc3d2d6357b20595e0/plots/time.png)
 From the graph it is clear how the inference time is approximately the same for the three models. However, for shorter sequences the int8 model appears to be the slowest one, probabily due to the lack of optimized kernels (as mentioned also [here](https://github.com/huggingface/quanto/blob/main/README.md)).
 
 #### 3. Accuracy
@@ -100,7 +100,7 @@ plddt = output['plddt'][0, :, 1]
 
 Another possible method to measure the accuracy is through the contact map prediction. Given the inferred three-dimensional protein structure, which is given by the `positions`, it is possible to determine this matrix, which is nothing but the distance between all possible residue pairs. Then, this map can be compared to the one obtained from the experimentally measured proteins that can be found in the PDB.
 
-![alt text](https://github.com/davideaguglia/ESMFold/blob/ef0ad408b26dee7d15755805e21ac5e3a6329a03/plots/acc.png)
+![alt text](https://github.com/davideaguglia/ESMFold/blob/fb7372984e2a77a31036d6bc3d2d6357b20595e0/plots/accuracy.png)
 
 This graph demonstrates how the performance loss due to the quantization procedure is minimal for both the configurations. The `float16` model performs essentially as the full model, while the huge reduction in GPU memory of the `int8` quantization determines a little more accuracy reduction.
 To conclude this analysis the following graphs display, for each model, the correlations between the pLDDT the accuracy and the sequence length.
