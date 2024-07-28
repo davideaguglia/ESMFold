@@ -43,7 +43,7 @@ positions = outputs['positions'][-1, 0]
 
 ## Optimization
 The main problem with the above implementation is the GPU memory demand: loading the model through the Hugging Face `transformers` requires at least 15GB of GPU memory, which can grow as far as 24GB when considering longer sequences. 
-For instance, for the previously considered protein, which is made of 256 residues ([pdb](https://www.rcsb.org/structure/1CA2)), `nvidia_smi` indicates that 16GB of memory where used for the inference.<br/>
+For instance, for the previously considered protein, which is made of 256 residues ([pdb](https://www.rcsb.org/structure/1CA2)), `nvidia_smi` indicates that 16GB of memory were used for the inference.<br/>
 Hence, the first possibility to make the model lighter is to convert the model weights to `float16`, a sort of simple post-training quantization scheme. This is done with a single line of code
 
 ```python
